@@ -9,7 +9,7 @@ const CLIENT_ID = process.env.COGNITO_CLIENT_ID;
 const USER_POOL_ID = process.env.COGNITO_USER_POOL_ID;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-const REDIRECT_URI = "https://73f5-2405-201-600e-8829-a806-cbe3-9870-d087.ngrok-free.app/callback";
+const REDIRECT_URI = `${process.env.REDIRECT_URI}/callback`;
 
 exports.google = async (req, res) => {
   const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=email%20profile%20openid`;

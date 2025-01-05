@@ -1,5 +1,5 @@
 // homepage.jsx
-import React from 'react';
+import React, { useState }from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Card from '../components/Card';
@@ -8,8 +8,18 @@ import icon3 from '../assets/icon3.png'
 import icon2 from '../assets/icon2.png'
 import icon1 from '../assets/icon1.png'
 import ContactUs from '../components/ContactUs';
-
+import AppointmentModal from './Appointment';
 const HomePage = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  const handleBookNowClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
 <div className="bg-coffee min-h-screen flex flex-col">
   <Header />
@@ -24,9 +34,12 @@ const HomePage = () => {
         Schedule your barbershop appointment 24/7 with just a few clicks!
       </p>
       <div className="space-x-4">
-        <button className="bg-brown text-cream py-3 px-6 rounded-lg">
-          Book Now
-        </button>
+      <button
+              onClick={handleBookNowClick}
+              className="bg-brown text-cream py-3 px-6 rounded-lg"
+            >
+              Book Now
+            </button>
         <button className="bg-cream text-coffee py-3 px-6 rounded-lg">
           Explore Services
         </button>
@@ -132,6 +145,8 @@ const HomePage = () => {
 
 <ContactUs/>
       <Footer />
+
+      <AppointmentModal show={showModal} onClose={handleCloseModal} />
     </div>
   );
 };
