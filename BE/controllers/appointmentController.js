@@ -91,24 +91,26 @@ exports.book = async (req, res) => {
 
 
 
-exports.allappointments = async (req, res) => {
+  exports.allappointments = async (req, res) => {
     try {
       const appointments = await Appointment.findAll({
         include: [
           {
             model: User,
-            as: 'User', // Specify the alias used in the association
-            attributes: ['username', 'email'], // Include only the fields needed
+            as: 'User',
+            attributes: ['username', 'email'], // Include only necessary fields
           },
         ],
+        order: [['createdAt', 'DESC']], // Sort by creation date (most recent first)
       });
   
       const formattedAppointments = appointments.map((appointment) => ({
         id: appointment.id,
         appointmentDate: appointment.appointment_date,
+        createdAt: appointment.createdAt,
         status: appointment.status,
-        patientName: appointment.User.username,
-        patientEmail: appointment.User.email,
+        CustomerName: appointment.User.username,
+        CustomerEmail: appointment.User.email,
       }));
   
       res.json(formattedAppointments);
@@ -118,9 +120,10 @@ exports.allappointments = async (req, res) => {
     }
   };
   
+  
 
 
-exports.confirm = async (req, res) => {
+  exports.confirm = async (req, res) => {
     const { id } = req.body; // Extract appointment ID from the request body
     try {
       // Find the appointment and include the associated User
@@ -149,7 +152,7 @@ exports.confirm = async (req, res) => {
   
       // Create notification for the customer
       await Notification.create({
-        user_id: appointment.User.id,
+        user_id: appointment.user_id,
         message: customerMessage,
         status: 'sent',
       });
@@ -159,21 +162,14 @@ exports.confirm = async (req, res) => {
       const barberShopOwnerEmail = process.env.BARBER_SHOP_OWNER_EMAIL;
       await sendEmail(barberShopOwnerEmail, 'Appointment Confirmed', ownerMessage);
   
-      // Create notification for the barber shop owner
-      await Notification.create({
-        user_id: null, // Assuming no user ID for the owner
-        message: ownerMessage,
-        status: 'sent',
-      });
-  
       res.status(200).json({ message: 'Appointment confirmed successfully and emails sent.' });
     } catch (error) {
       console.error('Error confirming appointment:', error);
       res.status(500).json({ message: 'Failed to confirm appointment.' });
     }
-};
+  };
   
-exports.reject = async (req, res) => {
+  exports.reject = async (req, res) => {
     const { id } = req.body; // Extract appointment ID from the request body
     try {
       // Find the appointment and include the associated User
@@ -202,7 +198,7 @@ exports.reject = async (req, res) => {
   
       // Create notification for the customer
       await Notification.create({
-        user_id: appointment.User.id,
+        user_id: appointment.user_id,
         message: customerMessage,
         status: 'sent',
       });
@@ -211,13 +207,6 @@ exports.reject = async (req, res) => {
       const ownerMessage = `Appointment cancelled: ${appointment.User.username} had an appointment scheduled for ${appointment.appointment_date}, which has been cancelled.`;
       const barberShopOwnerEmail = process.env.BARBER_SHOP_OWNER_EMAIL;
       await sendEmail(barberShopOwnerEmail, 'Appointment Cancelled', ownerMessage);
-  
-      // Create notification for the barber shop owner
-      await Notification.create({
-        user_id: null, // Assuming no user ID for the owner
-        message: ownerMessage,
-        status: 'sent',
-      });
   
       res.status(200).json({ message: 'Appointment cancelled successfully and emails sent.' });
     } catch (error) {

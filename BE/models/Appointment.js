@@ -22,16 +22,12 @@ Appointment.init(
       type: DataTypes.ENUM('pending', 'confirmed', 'completed', 'cancelled'),
       defaultValue: 'pending',
     },
-    created_at: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-    },
   },
   {
     sequelize,
     modelName: 'Appointment',
     tableName: 'appointments',
-    timestamps: false,
+    timestamps: true,
   }
 );
 
