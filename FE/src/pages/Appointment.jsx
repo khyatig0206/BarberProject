@@ -24,7 +24,7 @@ const AppointmentModal = ({ show, onClose }) => {
       setLoading(true);
 
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/appontments/book`, // Replace with your API URL
+        `${import.meta.env.VITE_BASE_URL}/api/appointments/book`, // Replace with your API URL
         { appointment_date: appointmentDateTime },
         {
           headers: {

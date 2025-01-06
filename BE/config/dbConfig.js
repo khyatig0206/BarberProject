@@ -2,13 +2,16 @@ require('dotenv').config(); // Load environment variables
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME,          // Database name
-  process.env.DB_USER,          // Database user
-  process.env.DB_PASSWORD,      // Database password
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
-    host: process.env.DB_HOST,  // Host
-    dialect: process.env.DB_DIALECT, // Dialect
-    logging: process.env.DB_LOGGING === 'true', // Logging (convert string to boolean)
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
+    logging: process.env.DB_LOGGING === 'true',
+    dialectOptions: {
+      connectTimeout: 60000, // 60 seconds
+    },
   }
 );
 

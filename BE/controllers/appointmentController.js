@@ -147,19 +147,33 @@ exports.confirm = async (req, res) => {
       const customerMessage = `Hello ${appointment.User.username}, your appointment scheduled for ${appointment.appointment_date} has been confirmed.`;
       await sendEmail(appointment.User.email, 'Appointment Confirmed', customerMessage);
   
+      // Create notification for the customer
+      await Notification.create({
+        user_id: appointment.User.id,
+        message: customerMessage,
+        status: 'sent',
+      });
+  
       // Send email to the barber shop owner
       const ownerMessage = `Appointment confirmed: ${appointment.User.username} has an appointment scheduled for ${appointment.appointment_date}.`;
       const barberShopOwnerEmail = process.env.BARBER_SHOP_OWNER_EMAIL;
       await sendEmail(barberShopOwnerEmail, 'Appointment Confirmed', ownerMessage);
+  
+      // Create notification for the barber shop owner
+      await Notification.create({
+        user_id: null, // Assuming no user ID for the owner
+        message: ownerMessage,
+        status: 'sent',
+      });
   
       res.status(200).json({ message: 'Appointment confirmed successfully and emails sent.' });
     } catch (error) {
       console.error('Error confirming appointment:', error);
       res.status(500).json({ message: 'Failed to confirm appointment.' });
     }
-  };
+};
   
-  exports.reject = async (req, res) => {
+exports.reject = async (req, res) => {
     const { id } = req.body; // Extract appointment ID from the request body
     try {
       // Find the appointment and include the associated User
@@ -186,10 +200,24 @@ exports.confirm = async (req, res) => {
       const customerMessage = `Hello ${appointment.User.username}, your appointment scheduled for ${appointment.appointment_date} has been cancelled.`;
       await sendEmail(appointment.User.email, 'Appointment Cancelled', customerMessage);
   
+      // Create notification for the customer
+      await Notification.create({
+        user_id: appointment.User.id,
+        message: customerMessage,
+        status: 'sent',
+      });
+  
       // Send email to the barber shop owner
       const ownerMessage = `Appointment cancelled: ${appointment.User.username} had an appointment scheduled for ${appointment.appointment_date}, which has been cancelled.`;
       const barberShopOwnerEmail = process.env.BARBER_SHOP_OWNER_EMAIL;
       await sendEmail(barberShopOwnerEmail, 'Appointment Cancelled', ownerMessage);
+  
+      // Create notification for the barber shop owner
+      await Notification.create({
+        user_id: null, // Assuming no user ID for the owner
+        message: ownerMessage,
+        status: 'sent',
+      });
   
       res.status(200).json({ message: 'Appointment cancelled successfully and emails sent.' });
     } catch (error) {
@@ -197,5 +225,6 @@ exports.confirm = async (req, res) => {
       res.status(500).json({ message: 'Failed to reject appointment.' });
     }
   };
+  
   
   
