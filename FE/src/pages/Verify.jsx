@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; 
 
 const Verify = () => {
   const location = useLocation();
@@ -13,22 +15,22 @@ const Verify = () => {
 
   const handleVerify = async () => {
     if (!username) {
-      alert("Username is missing. Please go back and sign up again.");
+      toast.error("Username is missing. Please go back and sign up again.");
       return;
     }
     try {
       setLoading(true);
-      setError("");
       console.log(verificationCode);
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/auth/confirm`, {
         username,
         confirmationCode: verificationCode,
       });
-      alert("Verification Successful! Please log in.");
-      navigate("/signin"); // Redirect to Sign In page
+      toast.success("Verification Successful! Please log in.");
+      navigate("/signin"); 
       console.log(response.data);
     } catch (err) {
-      setError(err.response?.data?.message || "Verification Failed");
+      const errorMessage = err.response?.data?.message || "Verification Failed";
+      toast.error(errorMessage); 
     } finally {
       setLoading(false);
     }
@@ -38,7 +40,6 @@ const Verify = () => {
     <div className="flex justify-center items-center min-h-screen bg-cream">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold text-center text-coffee mb-6">Verify Account</h1>
-        {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
         <div className="space-y-4">
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">Verification Code</label>

@@ -3,16 +3,17 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; 
 const SignIn = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      setError("");
 
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/auth/signin`, data);
 
@@ -20,11 +21,11 @@ const SignIn = () => {
       sessionStorage.setItem("accessToken", response.data.token);
       sessionStorage.setItem("refreshToken", response.data.refreshToken);
 
-      alert("Sign In Successful!");
+      toast.success("Sign In Successful!");
       navigate("/"); // Redirect to home page
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Sign In Failed";
-      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

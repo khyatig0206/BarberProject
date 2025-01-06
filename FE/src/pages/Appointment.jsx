@@ -1,108 +1,145 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AppointmentModal = ({ show, onClose }) => {
   const [appointmentDate, setAppointmentDate] = useState('');
   const [appointmentTime, setAppointmentTime] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-
+  
     if (!appointmentDate || !appointmentTime) {
-      setError('Please select both date and time');
+      toast.error('Please select both date and time!');
       return;
     }
-
+  
     const appointmentDateTime = `${appointmentDate}T${appointmentTime}`;
-
+    const currentDateTime = new Date();
+    const selectedDateTime = new Date(appointmentDateTime);
+  
+    const currentHours = currentDateTime.getHours();
+    const currentMinutes = currentDateTime.getMinutes();
+    const selectedHours = selectedDateTime.getHours();
+    const selectedMinutes = selectedDateTime.getMinutes();
+  
+    console.log('Current Time:', currentHours, currentMinutes);
+    console.log('Selected Time:', selectedHours, selectedMinutes);
+  
+    // Check if selected date is today and if selected time is in the past
+    if (
+      selectedDateTime <= currentDateTime || 
+      (appointmentDate === currentDateTime.toISOString().split('T')[0] &&
+        (selectedHours < currentHours || 
+        (selectedHours === currentHours && selectedMinutes < currentMinutes)))
+    ) {
+      toast.error('You cannot select a past time on today\'s date.');
+      return;
+    }
+  
     try {
       setLoading(true);
-
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/appointments/book`, // Replace with your API URL
+        `${import.meta.env.VITE_BASE_URL}/api/appointments/book`,
         { appointment_date: appointmentDateTime },
         {
           headers: {
-            Authorization: `${sessionStorage.getItem('accessToken')}`, // Pass JWT token if required
+            Authorization: `${sessionStorage.getItem('accessToken')}`,
             'Content-Type': 'application/json',
           },
         }
       );
-
-      setSuccess(response.data.message);
+      toast.success(response.data.message || 'Appointment booked successfully!');
       setAppointmentDate('');
       setAppointmentTime('');
+      onClose(); // Close the modal after a successful booking
     } catch (err) {
-      setError(err.response?.data?.message || 'An error occurred');
+      toast.error(err.response?.data?.message || 'An error occurred while booking.');
     } finally {
       setLoading(false);
     }
   };
+  
+  const validateTime = () => {
+    const currentDate = new Date();
+    const currentHours = currentDate.getHours();
+    const currentMinutes = currentDate.getMinutes();
+    const selectedDate = new Date(appointmentDate);
+  
+    if (appointmentDate === currentDate.toISOString().split('T')[0] && appointmentTime) {
+      const [selectedHours, selectedMinutes] = appointmentTime.split(':').map(Number);
+  
+      console.log('Current Time:', currentHours, currentMinutes);
+      console.log('Selected Time:', selectedHours, selectedMinutes);
+  
+      if (
+        selectedHours < currentHours ||
+        (selectedHours === currentHours && selectedMinutes < currentMinutes)
+      ) {
+        toast.error("You cannot select a past time on today's date.");
+        setAppointmentTime('');
+      }
+    }
+  };
+  
 
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-      <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
+    <div className="fixed inset-0 flex items-center justify-center bg-brown bg-opacity-50 z-50">
+      <div className="bg-cream m-2 w-full max-w-md p-6 rounded-lg shadow-lg sm:p-4 md:p-6 lg:p-8">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold text-gray-800">Book Appointment</h2>
+          <h2 className="text-xl font-semibold text-coffee sm:text-lg md:text-xl lg:text-2xl">
+            Book Appointment
+          </h2>
           <button
-            className="text-gray-600 hover:text-gray-800"
+            className="text-coffee hover:text-brown"
             onClick={onClose}
           >
             &times;
           </button>
         </div>
         <form onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-100 text-red-700 p-2 rounded mb-4">
-              {error}
-            </div>
-          )}
-          {success && (
-            <div className="bg-green-100 text-green-700 p-2 rounded mb-4">
-              {success}
-            </div>
-          )}
           <div className="mb-4">
             <label
               htmlFor="date"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-coffee"
             >
               Date
             </label>
             <input
               type="date"
               id="date"
-              className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              className="mt-1 w-full p-2 border border-coffee rounded focus:outline-none focus:ring focus:ring-brown"
               value={appointmentDate}
               onChange={(e) => setAppointmentDate(e.target.value)}
+              min={new Date().toISOString().split('T')[0]}
             />
           </div>
           <div className="mb-4">
             <label
               htmlFor="time"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-coffee"
             >
               Time
             </label>
             <input
               type="time"
               id="time"
-              className="mt-1 w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              className="mt-1 w-full p-2 border border-coffee rounded focus:outline-none focus:ring focus:ring-brown"
               value={appointmentTime}
-              onChange={(e) => setAppointmentTime(e.target.value)}
+              onChange={(e) => {
+                setAppointmentTime(e.target.value);
+                // validateTime();
+              }}
             />
           </div>
           <div className="flex justify-end">
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
+              className="bg-coffee text-cream px-4 py-2 rounded hover:bg-brown disabled:opacity-50 sm:px-3 sm:py-1 md:px-4 md:py-2 lg:px-5 lg:py-2"
               disabled={loading}
             >
               {loading ? 'Booking...' : 'Book Appointment'}

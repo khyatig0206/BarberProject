@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import MyAppointments from "../pages/MyAppointments";
 
 const Header = () => {
   const [scrolling, setScrolling] = useState(false);
@@ -67,7 +68,9 @@ const Header = () => {
           {/* Navbar (Laptop/Tablet View) */}
           <nav className="hidden lg:flex space-x-6 text-md items-center">
             <a href="#home" className="hover:text-brown">Home</a>
-            <a href="#about" className="hover:text-brown">About Us</a>
+            <a className="hover:text-brown cursor-pointer"
+            onClick={() => navigate("/aboutus")}
+            >About Us</a>
             <a href="#services" className="hover:text-brown">Services</a>
             <a href="#contact" className="hover:text-brown">Contact Us</a>
           </nav>
@@ -87,6 +90,18 @@ const Header = () => {
                   <span className="hidden sm:block text-md font-medium">
                     Welcome, {userInfo.username}!
                   </span>
+                  <button
+                  className="bg-brown sm:block hidden text-white rounded-lgtext-white py-1 px-2 md:py-2 md:px-4 rounded-lg "
+                  onClick={() => navigate('/myappointments')}
+                >
+                   My Appointments
+                </button>
+                <button
+                  className="bg-brown sm:block hidden text-white rounded-lgtext-white py-1 px-2 md:py-2 md:px-4 rounded-lg "
+                  onClick={() => navigate('/mypayments')}
+                >
+                   My Payments
+                </button>
                   {/* Optionally show roles */}
                   {/* <div className="text-sm text-gray-500">
                     ({userInfo.groups.length > 0 ? userInfo.groups.join(", ") : "No roles assigned"})
@@ -131,7 +146,7 @@ const Header = () => {
 
         {/* Sidebar (Mobile View) */}
         <div
-          className={`fixed top-0 right-0 h-full w-3/4 bg-coffee text-cream z-40 transform transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}
+          className={`fixed top-0 right-0 h-full w-3/4 sm:w-2/5 bg-coffee text-cream z-40 transform transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}
         >
           {/* Close Icon */}
           <div className="flex justify-end p-4">
@@ -150,7 +165,18 @@ const Header = () => {
                 <span className="text-md font-medium">
                   Welcome, {userInfo?.username}!
                 </span>
-                
+                <a
+                  className=" text-white  "
+                  onClick={() => navigate('/myappointments')}
+                >
+                   My Appointments
+                </a>
+                <a
+                  className=" text-white "
+                  onClick={() => navigate('/mypayments')}
+                >
+                   My Payments
+                </a>
               </>
             )}
             <a
@@ -161,12 +187,16 @@ const Header = () => {
               Home
             </a>
             <a
-              href="#about"
-              className="text-lg hover:text-brown"
-              onClick={toggleSidebar}
-            >
-              About Us
-            </a>
+  className="text-lg hover:text-brown"
+  onClick={(e) => {
+    e.preventDefault(); 
+    toggleSidebar();
+    navigate('/aboutus'); 
+  }}
+>
+  About Us
+</a>
+
             <a
               href="#services"
               className="text-lg hover:text-brown"
@@ -181,6 +211,7 @@ const Header = () => {
             >
               Contact Us
             </a>
+            
           </nav>
         </div>
       </div>

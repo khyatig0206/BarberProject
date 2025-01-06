@@ -3,6 +3,9 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; 
 import Header from "../components/Header";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; 
+
 const SignUp = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [loading, setLoading] = useState(false);
@@ -10,17 +13,16 @@ const SignUp = () => {
   const navigate = useNavigate(); 
   const onSubmit = async (data) => {
     if (data.password !== data.confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!");
       return;
     }
     try {
       setLoading(true);
-      setError("");
       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/auth/signup`, data);
-      alert("Sign Up Successful! Please check your email for the verification code.");
+      toast.success("Sign Up Successful! Please check your email for the verification code.");
       navigate("/verify", { state: { username: data.username } }); // Redirect to Verify page with username
     } catch (err) {
-      setError(err.response?.data?.message || "Sign Up Failed");
+      toast.error(err.response?.data?.message || "Sign Up Failed");
     } finally {
       setLoading(false);
     }

@@ -7,25 +7,25 @@ import HomePage from "./pages/HomePage";
 import GoogleCallback from "./pages/googleCallback";
 import AdminAppointmentsPage from "./pages/Admin";
 import PrivateRoute from "./components/PrivateRoute";
+import AboutUs from "./pages/AboutUs";
+import MyAppointments from "./pages/MyAppointments";
+import MyPayments from "./pages/MyPayments";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const App = () => (
+ 
   <Router>
+     <ToastContainer/>
     <Routes>
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/verify" element={<Verify />} />
-      <Route path="/" element={
-        <PrivateRoute>
-        <HomePage />
-        </PrivateRoute>
-      } />
+      <Route path="/aboutus" element={<AboutUs/>} />
+      <Route path="/myappointments" element={<PrivateRoute allowedRoles={["customer"]}> <MyAppointments /> </PrivateRoute> }  />
+      <Route path="/mypayments" element={<PrivateRoute allowedRoles={["customer"]}> <MyPayments /> </PrivateRoute> }  />
+      <Route path="/" element={<PrivateRoute  allowedRoles={["customer"]}><HomePage /></PrivateRoute>} /> 
       <Route path="/callback" element={<GoogleCallback/>} />
-
-      
-      <Route path="/admin" element={
-        <PrivateRoute>
-        <AdminAppointmentsPage/>
-        </PrivateRoute>
-        }/>
+      <Route path="/admin" element={<PrivateRoute  allowedRoles={["admin"]}> <AdminAppointmentsPage/> </PrivateRoute> }/>
 
     </Routes>
   </Router>

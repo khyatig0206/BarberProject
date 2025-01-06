@@ -9,9 +9,10 @@ import icon2 from '../assets/icon2.png'
 import icon1 from '../assets/icon1.png'
 import ContactUs from '../components/ContactUs';
 import AppointmentModal from './Appointment';
+import { Navigate,useNavigate } from 'react-router-dom';
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
-
+  const navigate = useNavigate();
   const handleBookNowClick = () => {
     setShowModal(true);
   };
@@ -39,8 +40,10 @@ const HomePage = () => {
               className="bg-brown text-cream py-3 px-6 rounded-lg"
             >
               Book Now
+             
             </button>
-        <button className="bg-cream text-coffee py-3 px-6 rounded-lg">
+        <button className="bg-cream text-coffee py-3 px-6 rounded-lg"
+         onClick={() => navigate('/aboutus')}>
           Explore Services
         </button>
       </div>

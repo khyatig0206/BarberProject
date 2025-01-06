@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'; 
 
 const GoogleCallback = () => {
   const navigate = useNavigate();
@@ -37,7 +39,7 @@ const GoogleCallback = () => {
       const errorMessage =
         error.response?.data?.message ||
         "An unexpected error occurred during Google callback.";
-  
+        toast.error(errorMessage); 
       console.error("Error during Google callback:", error);
   
       if (error.response?.status === 404) {
@@ -45,7 +47,7 @@ const GoogleCallback = () => {
       } else if (error.response?.status === 400) {
         navigate("/signin");
       } else {
-        alert(errorMessage);
+        toast.error(errorMessage);
         navigate("/signin");
       }
     }

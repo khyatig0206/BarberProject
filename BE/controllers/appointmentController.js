@@ -214,6 +214,18 @@ exports.book = async (req, res) => {
       res.status(500).json({ message: 'Failed to reject appointment.' });
     }
   };
-  
-  
+
+// Controller to fetch all notifications
+exports.getAllNotifications = async (req, res) => {
+  try {
+    const notifications = await Notification.findAll({
+      order: [['createdAt', 'DESC']], // Most recent notifications on top
+    });
+    res.status(200).json(notifications);
+  } catch (err) {
+    console.error('Error fetching notifications:', err);
+    res.status(500).json({ error: 'Failed to fetch notifications' });
+  }
+};
+
   
