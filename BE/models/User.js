@@ -14,7 +14,7 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
-        name: 'username_unique', // Define a unique constraint name
+        name: 'username_unique',
         msg: 'Username must be unique',
       },
     },
@@ -22,7 +22,7 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
-        name: 'email_unique', // Define a unique constraint name
+        name: 'email_unique',
         msg: 'Email must be unique',
       },
       validate: { isEmail: true },
@@ -37,15 +37,20 @@ User.init(
     },
     verified: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false, // Default to false at signup
+      defaultValue: false,
     },
   },
   {
     sequelize,
     modelName: 'User',
     tableName: 'users',
-    timestamps: true, 
+    timestamps: true,
   }
 );
+
+// Define a function to set associations
+User.setAssociations = (models) => {
+  User.hasMany(models.Appointment, { foreignKey: 'user_id', as: 'appointments' });
+};
 
 module.exports = User;

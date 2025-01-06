@@ -4,9 +4,14 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
+const userRoutes = require('./routes/userRoutes');
 const setupSwagger = require('./config/swagger');
 const sequelize = require('./config/dbConfig'); 
+const User = require('./models/User');
+const Appointment = require('./models/Appointment');
 
+User.setAssociations({ Appointment });
+Appointment.setAssociations({ User });
 
 (async () => {
     try {
@@ -26,7 +31,9 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/appontments', appointmentRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/users', userRoutes);
+
 // Swagger
 setupSwagger(app);
 

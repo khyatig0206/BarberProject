@@ -1,6 +1,5 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../config/dbConfig');
-const User = require('./User'); // Import the User model
 
 class Appointment extends Model {}
 
@@ -14,10 +13,6 @@ Appointment.init(
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: User,
-        key: 'id',
-      },
     },
     appointment_date: {
       type: DataTypes.DATE,
@@ -36,8 +31,13 @@ Appointment.init(
     sequelize,
     modelName: 'Appointment',
     tableName: 'appointments',
-    timestamps: false, // Use created_at instead
+    timestamps: false,
   }
 );
+
+// Define a function to set associations
+Appointment.setAssociations = (models) => {
+  Appointment.belongsTo(models.User, { foreignKey: 'user_id', as: 'User' });
+};
 
 module.exports = Appointment;
