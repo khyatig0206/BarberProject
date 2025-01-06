@@ -31,7 +31,7 @@ Appointment.init(
   }
 );
 
-// Define a function to set associations
+
 Appointment.setAssociations = (models) => {
   Appointment.belongsTo(models.User, { foreignKey: 'user_id', as: 'User' });
 };

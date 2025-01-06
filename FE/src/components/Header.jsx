@@ -67,7 +67,7 @@ const Header = () => {
         <div className="flex space-x-3">
           {/* Navbar (Laptop/Tablet View) */}
           <nav className="hidden lg:flex space-x-6 text-md items-center">
-            <a href="#home" className="hover:text-brown">Home</a>
+            <a href="/" className="hover:text-brown">Home</a>
             <a className="hover:text-brown cursor-pointer"
             onClick={() => navigate("/aboutus")}
             >About Us</a>
@@ -90,7 +90,15 @@ const Header = () => {
                   <span className="hidden sm:block text-md font-medium">
                     Welcome, {userInfo.username}!
                   </span>
-                  <button
+                  
+                  {/* Optionally show roles */}
+                  {/* <div className="text-sm text-gray-500">
+                    ({userInfo.groups.length > 0 ? userInfo.groups.join(", ") : "No roles assigned"})
+                  </div> */}
+                </>
+              )}
+              <div className="flex items-center space-x-2">
+              <button
                   className="bg-brown sm:block hidden text-white rounded-lgtext-white py-1 px-2 md:py-2 md:px-4 rounded-lg "
                   onClick={() => navigate('/myappointments')}
                 >
@@ -102,13 +110,6 @@ const Header = () => {
                 >
                    My Payments
                 </button>
-                  {/* Optionally show roles */}
-                  {/* <div className="text-sm text-gray-500">
-                    ({userInfo.groups.length > 0 ? userInfo.groups.join(", ") : "No roles assigned"})
-                  </div> */}
-                </>
-              )}
-              <div className="flex items-center">
                 <button
                   className="bg-brown text-white py-1 px-2 md:py-2 md:px-4 rounded-lg "
                   onClick={handleLogout}

@@ -44,7 +44,13 @@ const AppointmentsTable = () => {
       fetchAppointments();
     }, []);
   
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return (
+          <div className="flex items-center justify-center h-screen bg-gray-100">
+            <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin-slow border-brown"></div>
+          </div>
+        );
+      }
   
     return (
       <table className="min-w-full bg-cream shadow-md rounded">
@@ -80,14 +86,14 @@ const AppointmentsTable = () => {
               <td className="py-3 px-4">{appointment.status}</td>
               <td className="py-3 px-4 space-x-2">
                 <button
-                    className="bg-green-500 text-white px-3 py-1 rounded disabled:opacity-50"
+                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-700 disabled:opacity-50 disabled:bg-gray-500"
                     onClick={() => handleAction(appointment.id, "confirm")}
                     disabled={appointment.status !== "pending"}
                 >
                     Confirm
                 </button>
                 <button
-                    className="bg-red-500 text-white px-3 py-1 rounded disabled:opacity-50"
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 disabled:opacity-50 disabled:bg-gray-500"
                     onClick={() => handleAction(appointment.id, "reject")}
                     disabled={appointment.status !== "pending"}
                 >

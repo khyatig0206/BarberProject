@@ -10,6 +10,7 @@ import icon1 from '../assets/icon1.png'
 import ContactUs from '../components/ContactUs';
 import AppointmentModal from './Appointment';
 import { Navigate,useNavigate } from 'react-router-dom';
+
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();

@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const PrivateRoute = ({ children, allowedRoles }) => {
+const PrivateRoute = ({ children }) => {
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,8 +31,8 @@ const PrivateRoute = ({ children, allowedRoles }) => {
         const { groups } = response.data;
 
         // Check the role and decide the redirect path
-        if (groups.some(role => allowedRoles.includes(role))) {
-          setUserRole(groups); 
+        if (groups.includes("customer")) {
+          navigate("/");
         } else if (groups.includes("admin")) {
           navigate("/admin");
         } else {
@@ -48,13 +47,17 @@ const PrivateRoute = ({ children, allowedRoles }) => {
     };
 
     fetchUserInfo();
-  }, [navigate, allowedRoles]);
+  }, [navigate]);
 
   if (loading) {
-    return <div>Loading...</div>; // Show a loading spinner
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin-slow border-brown"></div>
+      </div>
+    );
   }
 
-  return userRole ? children : null;
+  return children;
 };
 
 export default PrivateRoute;

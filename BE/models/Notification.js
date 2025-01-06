@@ -32,7 +32,7 @@ Notification.init(
     sequelize,
     modelName: 'Notification',
     tableName: 'notifications',
-    timestamps: true, // Use created_at instead
+    timestamps: true,
   }
 );
 

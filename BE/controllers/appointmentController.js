@@ -229,3 +229,27 @@ exports.getAllNotifications = async (req, res) => {
 };
 
   
+exports.myappointments = async(req,res)=>{
+    try {
+        const { userId } = req.user;
+    
+        // Find the user by username
+        const user = await User.findOne({ where: { id: userId } });
+    
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+    
+        // Fetch appointments for the user
+        const appointments = await Appointment.findAll({
+          where: { user_id: user.id },
+          attributes: ['id','appointment_date', 'status', 'createdAt'], // Fetch only required fields
+          order: [['appointment_date', 'ASC']], // Order by appointment_date
+        });
+    
+        res.status(200).json({ appointments });
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+        res.status(500).json({ message: "Server error" });
+      }
+};

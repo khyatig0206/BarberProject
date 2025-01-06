@@ -21,11 +21,11 @@ const App = () => (
       <Route path="/signup" element={<SignUp />} />
       <Route path="/verify" element={<Verify />} />
       <Route path="/aboutus" element={<AboutUs/>} />
-      <Route path="/myappointments" element={<PrivateRoute allowedRoles={["customer"]}> <MyAppointments /> </PrivateRoute> }  />
-      <Route path="/mypayments" element={<PrivateRoute allowedRoles={["customer"]}> <MyPayments /> </PrivateRoute> }  />
-      <Route path="/" element={<PrivateRoute  allowedRoles={["customer"]}><HomePage /></PrivateRoute>} /> 
+      <Route path="/myappointments" element={ <MyAppointments />  }  />
+      <Route path="/mypayments" element={ <MyPayments /> }  />
+      <Route path="/" element={<PrivateRoute><HomePage /></PrivateRoute>} /> 
       <Route path="/callback" element={<GoogleCallback/>} />
-      <Route path="/admin" element={<PrivateRoute  allowedRoles={["admin"]}> <AdminAppointmentsPage/> </PrivateRoute> }/>
+      <Route path="/admin" element={<PrivateRoute > <AdminAppointmentsPage/> </PrivateRoute> }/>
 
     </Routes>
   </Router>

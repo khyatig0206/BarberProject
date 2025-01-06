@@ -1,10 +1,10 @@
-const User = require('../models/User'); // Import the User model
+const User = require('../models/User');
 
 // Get all users
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll({
-      attributes: ['id', 'username', 'email', 'role', 'verified'], // Fetch specific fields
+      attributes: ['id', 'username', 'email', 'role', 'verified'],
     });
 
     res.status(200).json({

@@ -48,7 +48,7 @@ User.init(
   }
 );
 
-// Define a function to set associations
+
 User.setAssociations = (models) => {
   User.hasMany(models.Appointment, { foreignKey: 'user_id', as: 'appointments' });
 };

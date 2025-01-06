@@ -22,7 +22,11 @@ const AllUsers = () => {
   }, []);
 
   if (loading) {
-    return <p>Loading users...</p>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin-slow border-brown"></div>
+      </div>
+    );
   }
 
   if (users.length === 0) {

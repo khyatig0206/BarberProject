@@ -1,32 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Header from '../components/Header';
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-const MyPayments = () => {
+
+const AllPayments = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPayments = async () => {
-      const token = sessionStorage.getItem('accessToken');
-
-      if (!token) {
-        toast.error('Access token is missing. Please log in again.');
-        setLoading(false);
-        return;
-      }
 
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/pay/my-payments`,
-          {
-            headers: {
-              Authorization: `${token}`,
-            },
-          }
+          `${import.meta.env.VITE_BASE_URL}/api/pay/get-all-payments`,
         );
         setPayments(response.data.payments);
+        console.log(response.data.payments);
       } catch (err) {
         console.error('Error fetching payments:', err);
         toast.error('Unable to fetch payments. Please try again later.');
@@ -46,25 +35,22 @@ const MyPayments = () => {
     );
   }
 
-
   return (
     <>
-      <Header />
-      <div className="bg-cream min-h-screen py-8 px-4">
+      <div className="bg-cream min-h-screen py-2 ">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-coffee mb-6">My Payments</h1>
 
-          <div className="bg-white shadow-md rounded-lg p-6">
-            <h2 className="text-2xl font-semibold text-brown mb-4">Payment History</h2>
+          <div className="bg-white shadow-md rounded-lg p-4">
+
             <ul className="space-y-4">
               {payments.map((payment) => (
-                <li key={payment.id} className="bg-cream p-4 rounded-lg shadow-sm">
+                <li key={payment.id} className="bg-cream p-2 rounded-lg shadow-sm">
                   <div className="flex justify-between items-center">
-                    <span className="text-coffee">
-                      Payment for Appointment ID: {payment.appointment_id} on{' '}
+                    <span className="text-brown">
+                      Payment from {payment.User?.username} ({payment.User?.email}) for Appointment ID: {payment.appointment_id} on{' '}
                       {new Date(payment.Appointment?.appointment_date).toLocaleString('en-US')}
                     </span>
-                    <span className="text-brown">${payment.amount}</span>
+                    <span className="text-brown">₹{payment.amount}</span>
                   </div>
                   <div className="text-gray-500 text-sm">
                     Status: {payment.payment_status} | Method: {payment.payment_method || 'N/A'}
@@ -79,4 +65,4 @@ const MyPayments = () => {
   );
 };
 
-export default MyPayments;
+export default AllPayments;

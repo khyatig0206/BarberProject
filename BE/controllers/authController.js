@@ -1,7 +1,7 @@
 require('dotenv').config(); 
 const AWS = require('../config/awsConfig');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Import the User model
+const User = require('../models/User');
 const axios = require("axios");
 
 const cognito = new AWS.CognitoIdentityServiceProvider();
@@ -21,13 +21,12 @@ exports.google = async (req, res) => {
 exports.callback = async (req, res) => {
   const { code } = req.body;
 
-  // Validate input
   if (!code) {
     return res.status(400).json({ error: "Missing authorization code" });
   }
 
   try {
-    // Step 1: Exchange authorization code for tokens with Google
+
     const tokenResponse = await axios.post("https://oauth2.googleapis.com/token", null, {
       params: {
         client_id: GOOGLE_CLIENT_ID,
@@ -43,7 +42,6 @@ exports.callback = async (req, res) => {
 
     const { id_token } = tokenResponse.data;
 
-    // Step 2: Decode Google ID Token to extract user email
     const decodedToken = jwt.decode(id_token);
     const userEmail = decodedToken?.email;
 
@@ -52,7 +50,6 @@ exports.callback = async (req, res) => {
       return res.status(400).json({ error: "Email not found in Google token" });
     }
 
-    // Step 3: Fetch user details from the database
     const user = await User.findOne({ where: { email: userEmail } }).catch(err => {
       console.error("Database error while fetching user:", err.message);
       throw new Error("Database error while fetching user.");
@@ -68,7 +65,6 @@ exports.callback = async (req, res) => {
 
     const { password, username } = user;
 
-    // Step 4: Authenticate user with Cognito
     const authParams = {
       AuthFlow: "USER_PASSWORD_AUTH",
       ClientId: CLIENT_ID,
@@ -84,14 +80,16 @@ exports.callback = async (req, res) => {
     });
 
     const accessToken = authResponse.AuthenticationResult.AccessToken;
+    const userObj = await User.findOne({ where: { username } });
+    if (!userObj) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    // Step 5: Generate custom JWT token
     const token = jwt.sign(
-      { username, accessToken },
+      { userId : userObj.id, username, accessToken },
       process.env.JWT_SECRET
     );
 
-    // Step 6: Return the tokens in the response
     res.json({
       message: "Login successful",
       token,
@@ -191,11 +189,21 @@ exports.signin = async (req, res) => {
   
     try {
       const data = await cognito.initiateAuth(params).promise();
-  
-      const token = jwt.sign(
-        { username: username, accessToken: data.AuthenticationResult.AccessToken },
-        process.env.JWT_SECRET
-      );
+      
+    const user = await User.findOne({ where: { username } });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate the JWT token with userId included
+    const token = jwt.sign(
+      { 
+        userId: user.id, 
+        username: username, 
+        accessToken: data.AuthenticationResult.AccessToken 
+      },
+      process.env.JWT_SECRET
+    );
   
       res.json({
         message: "Sign-in successful",

@@ -1,5 +1,5 @@
 const express = require('express');
-const { signup, confirm, signin , userInfo, google, callback } = require('../controllers/authController'); // Import both signup and confirm controllers
+const { signup, confirm, signin , userInfo, google, callback } = require('../controllers/authController');
 const { authenticate } = require('../middleware/authMiddleware');
 const router = express.Router();
 

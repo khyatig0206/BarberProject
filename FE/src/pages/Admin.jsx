@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AppointmentsTable from "../components/Allappointments";
 import AllUsers from "../components/Allusers";
 import AllNotification from "../components/AllNotification";
+import AllPayments from "../components/Allpayments";
 import { useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 
@@ -24,7 +25,9 @@ const AdminAppointmentsPage = () => {
         return <AllUsers />;
 
       case "notifications":
-        return <p><AllNotification/></p>;
+        return <AllNotification/>;
+    case "payments":
+            return <AllPayments/>;
 
       default:
         return <p>Select an option from the menu.</p>;
@@ -109,6 +112,15 @@ const AdminAppointmentsPage = () => {
               Notifications
             </button>
             <button
+              className={'text-left w-full'}
+              onClick={() => {
+                setActiveView("payments");
+                toggleSidebar();
+              }}
+            >
+              Payments
+            </button>
+            <button
               className="w-full text-left text-white py-2 rounded"
               onClick={handleLogout}
             >
@@ -121,7 +133,7 @@ const AdminAppointmentsPage = () => {
  <div className="hidden md:flex space-x-4 justify-center mt-4 items-center">
           <button
             className={`bg-brown px-4 py-2 rounded ${
-              activeView === "appointments" ? "bg-blue-800" : ""
+              activeView === "appointments" ? "bg-[#a74835]"  : ""
             }`}
             onClick={() => setActiveView("appointments")}
           >
@@ -129,7 +141,7 @@ const AdminAppointmentsPage = () => {
           </button>
           <button
             className={`bg-brown px-4 py-2 rounded ${
-              activeView === "users" ? "bg-blue-800" : ""
+              activeView === "users" ? "bg-[#a74835]"  : ""
             }`}
             onClick={() => setActiveView("users")}
           >
@@ -137,14 +149,22 @@ const AdminAppointmentsPage = () => {
           </button>
           <button
             className={`bg-brown px-4 py-2 rounded ${
-              activeView === "notifications" ? "bg-blue-800" : ""
+              activeView === "notifications" ? "bg-[#a74835]" : ""
             }`}
             onClick={() => setActiveView("notifications")}
           >
             Notifications
           </button>
           <button
-            className="bg-brown text-white py-1 px-2 rounded"
+            className={`bg-brown px-4 py-2 rounded ${
+              activeView === "payments" ? "bg-[#a74835]" : ""
+            }`}
+            onClick={() => setActiveView("payments")}
+          >
+            Payments
+          </button>
+          <button
+            className="bg-brown text-white px-4 py-2 rounded"
             onClick={handleLogout}
           >
             Logout
@@ -156,12 +176,21 @@ const AdminAppointmentsPage = () => {
     {/* Content */}
     <div className="container mx-auto mt-8 px-4 bg-cream m-2 p-2 rounded-lg shadow-md min-h-screen">
       <div className="min-h-screen sm:h-[80vh] md:h-[70vh] lg:h-[60vh] overflow-y-auto scrollbar-hide p-4">
-        <h1 className="text-xl sm:text-2xl font-semibold mb-6">
-          {activeView === "appointments"
-            ? "All Appointments"
-            : activeView === "users"
-            ? "All Users"
-            : "Notifications"}
+      <h1 className="text-xl sm:text-2xl font-semibold mb-6">
+        {(() => {
+            switch (activeView) {
+            case "appointments":
+                return "All Appointments";
+            case "users":
+                return "All Users";
+            case "notifications":
+                return "Notifications";
+            case "payments":
+                return "All Payments";
+            default:
+                return "Select an option from the menu.";
+            }
+        })()}
         </h1>
         <div className=" ">
           {renderView()}

@@ -6,6 +6,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        'spin-slow': 'spin 4s linear infinite', // Slower spin (2 seconds per rotation)
+      },
       colors: {
         coffee: "#5C3D2E",
         cream: "#F9F3EC",

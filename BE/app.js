@@ -4,19 +4,21 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 const userRoutes = require('./routes/userRoutes');
 const setupSwagger = require('./config/swagger');
 const sequelize = require('./config/dbConfig'); 
 const User = require('./models/User');
 const Appointment = require('./models/Appointment');
+const Payment = require('./models/Payment')
 
 User.setAssociations({ Appointment });
 Appointment.setAssociations({ User });
+Payment.setAssociations({ User, Appointment });
 
 (async () => {
     try {
-      // Synchronize the database
-      await sequelize.sync({ alter: true }); // `alter` will update the table without deleting existing data
+      await sequelize.sync({ alter: true });
       console.log('Database synchronized successfully.');
     } catch (error) {
       console.error('Error synchronizing the database:', error);
@@ -25,14 +27,14 @@ Appointment.setAssociations({ User });
 
 const app = express();
 app.use(cors({ origin: '*' })); 
-// app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' })); // Allow specific origins or all (*)
-
+// app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' })); 
 app.use(bodyParser.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/pay', paymentRoutes);
 
 // Swagger
 setupSwagger(app);
